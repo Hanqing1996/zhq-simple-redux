@@ -1,20 +1,31 @@
-export default function createStore(reducer, initState) {
+export default function createStore(reducer) {
     
-    let state=initState
+    let state
     let listener
     
-    return{
-        getState:function(){
-            return state
-        },
+    // 初始化 state
+    dispatch({type:Symbol()})
     
-        subscribe:function (callback) {
-            // 接受订阅
-            listener=callback
-        },
-        dispatch:function (action) {
-            state=reducer(state,action)
-            listener()
-        }
+    function getState(){
+        return state
+    }
+    
+    function subscribe(callback) {
+        // 接受订阅
+        listener=callback
+    }
+    function dispatch(action) {
+        // 更新 state
+        state=state||{}
+        state=reducer(state,action)
+        // 执行订阅的 callback
+        listener&&listener()
+    }
+    
+    // 暴露给外界使用的API
+    return{
+        getState,
+        subscribe,
+        dispatch
     }
 }

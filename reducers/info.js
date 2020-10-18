@@ -1,5 +1,13 @@
+let initState = {
+    name: 'lucy',
+    description: 'hot girl'
+    
+}
 
+// 这里处理的 state 只与 info 有关
 export default function InfoReducer(state,action){
+    
+    state=state||initState
     
     switch (action.type) {
         case 'SET_NAME':
@@ -10,7 +18,7 @@ export default function InfoReducer(state,action){
         case 'SET_DESCRIPTION':
             return{
                 ...state,
-                description: state.description
+                description: action.description
             }
         default:
             return state

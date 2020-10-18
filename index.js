@@ -9,18 +9,7 @@ const reducer = combineReducers({
     info: InfoReducer
 });
 
-let initState = {
-    counter: {
-        count: 0
-    },
-    info: {
-        name: 'lucy',
-        description: 'hot girl'
-    }
-}
-
-
-let store = createStore(reducer, initState);
+let store = createStore(reducer);
 
 store.subscribe(() => {
     let state = store.getState();
@@ -28,8 +17,7 @@ store.subscribe(() => {
 });
 
 
-
-// dispathch 会修改 store 内部的 state,并执行 subscribe 传入的回调函数
+// dispatch 会修改 store 内部的 state,并执行 subscribe 传入的回调函数
 store.dispatch({
     type: 'INCREMENT'
 });
@@ -41,5 +29,9 @@ store.dispatch({
 
 store.dispatch({
     type: 'SET_DESCRIPTION',
-    name: 'smart girl'
+    description: 'smart girl'
+});
+
+store.dispatch({
+    type: 'DECREMENT'
 });
