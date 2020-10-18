@@ -1,9 +1,5 @@
-let initState = {
-    count: 0
-}
+
 export default function CounterReducer(state,action){
-    
-    state=state||initState
     
     switch (action.type) {
         case 'INCREMENT':

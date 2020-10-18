@@ -13,8 +13,8 @@ export default function createStore(reducer, initState) {
             listener=callback
         },
         dispatch:function (action) {
-    
-            console.log(reducer[action.type]);
+            state=reducer(state,action)
+            listener()
         }
     }
 }

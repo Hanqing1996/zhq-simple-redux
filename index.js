@@ -38,3 +38,8 @@ store.dispatch({
     type: 'SET_NAME',
     name: 'libai'
 });
+
+store.dispatch({
+    type: 'SET_DESCRIPTION',
+    name: 'smart girl'
+});
