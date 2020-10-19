@@ -4,6 +4,7 @@ import InfoReducer from "./reducers/info";
 import {combineReducers} from "./redux/combineReducers";
 import timeMiddleware from "./middlewares/timeMiddleware"
 import showStateMiddleware from "./middlewares/showStateMiddleware";
+import addMiddlewares from "./redux/addMiddlewares";
 
 // 构造 reducer
 const reducer = combineReducers({
@@ -11,18 +12,22 @@ const reducer = combineReducers({
     info: InfoReducer
 });
 
+// 初始化 store
 let store = createStore(reducer);
 
-const next=store.dispatch
+// 对 store 进一步改造，注入各个中间件，其实可以把"初始化"和"注入中间件"封装起来。不过我暂时觉得没必要
+store=addMiddlewares(store,showStateMiddleware,timeMiddleware)
 
-// dispatch 工厂
-const showState=showStateMiddleware(store)
-
-// dispatch 工厂
-const logTime=timeMiddleware(store)
-
-store.dispatch=logTime(showState(next))
-
+// const next=store.dispatch
+//
+// // dispatch 工厂
+// const showState=showStateMiddleware(store)
+//
+// // dispatch 工厂
+// const logTime=timeMiddleware(store)
+//
+// store.dispatch=logTime(showState(next))
+//
 
 store.subscribe(() => {
     let state = store.getState();
@@ -46,25 +51,3 @@ store.dispatch({
 store.dispatch({
     type: 'DECREMENT'
 })
-
-
-
-//
-// // dispatch 会修改 store 内部的 state,并执行 subscribe 传入的回调函数
-// store.dispatch({
-//     type: 'INCREMENT'
-// });
-//
-// store.dispatch({
-//     type: 'SET_NAME',
-//     name: 'libai'
-// });
-//
-// store.dispatch({
-//     type: 'SET_DESCRIPTION',
-//     description: 'smart girl'
-// });
-//
-// store.dispatch({
-//     type: 'DECREMENT'
-// });

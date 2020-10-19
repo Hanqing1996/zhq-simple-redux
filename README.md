@@ -20,7 +20,10 @@
 提交 state 修改，真正的 state 修改由 store 通过 reducer 实现。
 * subscribe
 订阅，传入一个回调函数，该回调函数将在 dispatch 后触发
-
+* action
+是一个对象，必须包含 type 字段
+* middleware
+中间件的扩展，实际上是以"接受一个 dispatch,返回一个 dispatch 的"思想去构造 dispatch 链。这种做法显然极其有利于 AOP
 
 
 #### state 拆分
@@ -97,7 +100,72 @@ const showState=showStateMiddleware(store)
 // dispatch 工厂
 const logTime=timeMiddleware(store)
 
-store.dispatch=logTime(showState(next))
+store.dispatch=logTime(showState(next)) 
 
 // store.dispatch=middleware1(middleware2(middleware3...(next))))
 ```
+注意：logTime(showState(next)) 是先触发 logTime 内容，再触发 showState 流程。
+
+3. 新需求：在2中，使用中间件时，每个 middleware 都需要用 store 初始化一下，并赋值给 dispatch。能不能把这些步骤嵌入到 store 的构造过程中去。
+
+最后只要以如下方式调用中间件
+```js
+
+// 复合的中间件集合
+const compositedMiddlewares = composite(middleware1, middleware12, middleware3);
+
+// compositedMiddlewares 是构造 store 的参数之一
+const store = createStore(reducer,compositedMiddlewares);
+
+store.subscribe(() => {
+  let state = store.getState();
+  console.log(state.counter.count);
+});
+
+// 直接调用 dispatch,以触发各个中间件
+store.dispatch({
+  type: 'INCREMENT'
+});
+```
+
+
+
+由于中间件的初始化必须基于已有的 state，因此只能将各个中间件集成至 store 的 dispatch 的步封装成一个对已有 store 的后续改造操作
+```js
+// addMiddlewares.js
+
+export default function addMiddlewares(store,...middlewares) {
+    
+    const {dispatch}=store
+    
+    let next
+    middlewares.reverse().map(middleware=>{
+        next=next||dispatch
+        next=middleware(store)(next)
+    })
+
+    store.dispatch=next
+
+    return store
+}
+```
+```js
+// index.js
+
+let store = createStore(reducer);
+store=addMiddlewares(store,showStateMiddleware,timeMiddleware)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
