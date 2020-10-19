@@ -29,7 +29,7 @@ store=addMiddlewares(store,showStateMiddleware,timeMiddleware)
 // store.dispatch=logTime(showState(next))
 //
 
-store.subscribe(() => {
+const unsubscribe=store.subscribe(() => {
     let state = store.getState();
     console.log(state.counter.count, state.info.name, state.info.description);
 });
@@ -48,6 +48,9 @@ store.dispatch({
     description: 'smart girl'
 })
 
+unsubscribe()
+
+// 已经退订，不再触发回调函数
 store.dispatch({
     type: 'DECREMENT'
 })

@@ -155,8 +155,31 @@ export default function addMiddlewares(store,...middlewares) {
 let store = createStore(reducer);
 store=addMiddlewares(store,showStateMiddleware,timeMiddleware)
 ```
+---
 
+#### unsubscribe
+退订功能
+```js
+// createStore.js
 
+function subscribe(callback) {
+    // 接受订阅
+    listener=callback
+    return function unsubscribe() {
+        listener=null
+    }
+}
+```
+```js
+// index.js
+
+const unsubscribe=store.subscribe(() => {
+    let state = store.getState();
+    console.log(state.counter.count, state.info.name, state.info.description);
+});
+...
+unsubscribe()
+```
 
 
 

@@ -13,6 +13,9 @@ export default function createStore(reducer) {
     function subscribe(callback) {
         // 接受订阅
         listener=callback
+        return function unsubscribe() {
+            listener=null
+        }
     }
     function dispatch(action) {
         
