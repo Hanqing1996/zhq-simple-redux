@@ -15,6 +15,7 @@ export default function createStore(reducer) {
         listener=callback
     }
     function dispatch(action) {
+        
         // 更新 state
         state=state||{}
         state=reducer(state,action)
