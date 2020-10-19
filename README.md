@@ -69,3 +69,35 @@ export default (next)=>(action)=> {
     next(action)
 }
 ```
+2. 新需求，在1的基础上，在每次 dispatch 时输出 store.state。也就是要实现两种中间件的复合
+```js
+// middlewares/timeMiddleware.js 
+
+/**
+ * middleware 在初始化 store 后的部分，可以看成是 dispatch 的迭代（接受旧 dispatch,返回新 dispatch）,而且会：
+ * 1. 规定新的 dispatch 内容
+ * 2. 执行旧的 dispatch（必须）
+ * @param store
+ * @returns {function(*): function(...[*]=)}
+ */
+export default (store)=>(next)=>(action)=> {
+    console.log(new Date())
+    next(action)
+}
+```
+由此，在使用时，可以通过 dispatch 调用链来实现不同中间件的复合
+```js
+let store = createStore(reducer);
+
+const next=store.dispatch
+
+// dispatch 工厂
+const showState=showStateMiddleware(store)
+
+// dispatch 工厂
+const logTime=timeMiddleware(store)
+
+store.dispatch=logTime(showState(next))
+
+// store.dispatch=middleware1(middleware2(middleware3...(next))))
+```

@@ -3,6 +3,7 @@ import CounterReducer from './reducers/counter'
 import InfoReducer from "./reducers/info";
 import {combineReducers} from "./redux/combineReducers";
 import timeMiddleware from "./middlewares/timeMiddleware"
+import showStateMiddleware from "./middlewares/showStateMiddleware";
 
 // 构造 reducer
 const reducer = combineReducers({
@@ -11,10 +12,17 @@ const reducer = combineReducers({
 });
 
 let store = createStore(reducer);
+
 const next=store.dispatch
 
-//
-store.dispatch=timeMiddleware(next)
+// dispatch 工厂
+const showState=showStateMiddleware(store)
+
+// dispatch 工厂
+const logTime=timeMiddleware(store)
+
+store.dispatch=logTime(showState(next))
+
 
 store.subscribe(() => {
     let state = store.getState();
