@@ -5,6 +5,7 @@ import {combineReducers} from "./redux/combineReducers";
 import timeMiddleware from "./middlewares/timeMiddleware"
 import showStateMiddleware from "./middlewares/showStateMiddleware";
 import addMiddlewares from "./redux/addMiddlewares";
+import AgeReducer from "./reducers/age";
 
 // 构造 reducer
 const reducer = combineReducers({
@@ -31,7 +32,7 @@ store=addMiddlewares(store,showStateMiddleware,timeMiddleware)
 
 const unsubscribe=store.subscribe(() => {
     let state = store.getState();
-    console.log(state.counter.count, state.info.name, state.info.description);
+    console.log(`state:${state.toString()}`);
 });
 
 store.dispatch({
@@ -47,6 +48,25 @@ store.dispatch({
     type: 'SET_DESCRIPTION',
     description: 'smart girl'
 })
+
+// 加载新 reducer
+const newReducer = combineReducers({
+    counter: CounterReducer,
+    info: InfoReducer,
+    age:AgeReducer
+});
+
+store.replaceReducer(newReducer)
+
+store.dispatch({
+    type: 'SET_DESCRIPTION',
+    description: 'smart girl'
+})
+
+store.dispatch({
+    type: 'OLD'
+})
+
 
 unsubscribe()
 

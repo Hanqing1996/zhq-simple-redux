@@ -26,10 +26,17 @@ export default function createStore(reducer) {
         listener&&listener()
     }
     
+    function replaceReducer(newReducer) {
+        reducer=newReducer
+        /*刷新一遍 state 的值，新来的 reducer 把自己的默认状态放到 state 树上去*/
+        dispatch({ type: Symbol() })
+    }
+    
     // 暴露给外界使用的API
     return{
         getState,
         subscribe,
-        dispatch
+        dispatch,
+        replaceReducer
     }
 }

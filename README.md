@@ -180,8 +180,36 @@ const unsubscribe=store.subscribe(() => {
 ...
 unsubscribe()
 ```
+---
+#### replaceReducer
+我们希望 reducer 是按需加载的，也就是项目运行到某一阶段时，store 才加载某些 reducer。因此 store 的 reducer 应该是可变的，store 要有支持切换 reducer 的接口。
+```js
+// createStore.js
 
+function replaceReducer(newReducer) {
+    reducer=newReducer
+    /*刷新一遍 state 的值，新来的 reducer 把自己的默认状态放到 state 树上去*/
+    dispatch({ type: Symbol() })
+}
 
+// 暴露给外界使用的API
+return{
+    ...
+    replaceReducer
+}
+```
+```js
+// index.js
+
+// 加载新 reducer
+const newReducer = combineReducers({
+    counter: CounterReducer,
+    info: InfoReducer,
+    age:AgeReducer
+});
+
+store.replaceReducer(newReducer)
+```
 
 
 
